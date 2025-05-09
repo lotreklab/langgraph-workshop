@@ -3,7 +3,9 @@
     "graphs": {
       "simple_graph": "./simple.py:graph",
       "memory": "./memory.py:graph",
-      "react": "./react.py:graph"
+      "react": "./react.py:graph",
+      "hitl": "./hitl2.py:app"
+
     },
     "env": "./.env",
     "python_version": "3.11",

@@ -7,8 +7,8 @@ from langgraph.graph import MessagesState, START
 # Here we define any ACTUAL tools
 from langchain_core.tools import tool
 from langgraph.prebuilt import ToolNode
-from langgraph.types import interrupt
-
+from langgraph.types import interrupt, Command
+from langchain_core.messages import ToolMessage, HumanMessage
 
 @tool
 def search(query: str):
@@ -74,7 +74,7 @@ def ask_human(state):
     tool_call_id = state["messages"][-1].tool_calls[0]["id"]
     ask = AskHuman.model_validate(state["messages"][-1].tool_calls[0]["args"])
     location = interrupt(ask.question)
-    tool_message = [{"tool_call_id": tool_call_id, "type": "tool", "content": location}]
+    tool_message = [ToolMessage(location, tool_call_id=tool_call_id)]
     return {"messages": tool_message}
 
 
@@ -121,4 +121,28 @@ memory = MemorySaver()
 # meaning you can use it as you would any other runnable
 app = workflow.compile(checkpointer=memory)
 
-display(Image(app.get_graph().draw_mermaid_png()))
+print(app)
+
+messages = [
+    HumanMessage("What is my name?"),
+]
+
+for update in app.stream({"messages": messages}, config={"configurable": {"thread_id": "000"}}):
+    agent = update.get("agent")
+    if agent:
+        for message in agent["messages"]:
+            message.pretty_print()
+    elif "__interrupt__" in update:
+        print("Interrupt:", update["__interrupt__"])
+    else:
+        print(update)
+
+for update in app.stream(Command(resume="My name is Gabriele."), config={"configurable": {"thread_id": "000"}}):
+    agent = update.get("agent")
+    if agent:
+        for message in agent["messages"]:
+            message.pretty_print()
+    elif "__interrupt__" in update:
+        print("Interrupt:", update["__interrupt__"])
+    else:
+        print(update)

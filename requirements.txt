@@ -1,0 +1,8 @@
+dotenv>=0.9.9
+langchain-groq>=0.3.2
+langchain-ollama>=0.3.2
+langchain-openai>=0.3.12
+langgraph>=0.3.28
+langgraph-cli>=0.2.2
+langgraph-prebuilt>=0.1.8
+langchain-tavily>=0.1.6
