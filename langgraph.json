@@ -1,0 +1,11 @@
+
+{
+    "graphs": {
+      "simple_graph": "./simple.py:graph",
+      "memory": "./memory.py:graph",
+      "react": "./react.py:graph"
+    },
+    "env": "./.env",
+    "python_version": "3.11",
+    "dependencies": ["."]
+}
